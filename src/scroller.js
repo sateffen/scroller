@@ -1,13 +1,11 @@
 'use strict';
 
-import {XScrollBar} from './xscrollbar';
-import {YScrollBar} from './yscrollbar';
+import {ScrollView} from './scrollview';
 
 class Scroller {
     constructor(aElement, aOptions) {
         this._container = aElement;
-        this._xScrollElement = new Scroller.XScrollBar(this._container);
-        this._yScrollElement = new Scroller.YScrollBar(this._container);
+        this._scrollView = new Scroller.ScrollView(this, aOptions);
 
         this._eventListener = {
             wheel: (aEvent) => {
@@ -42,8 +40,7 @@ class Scroller {
                 scrollHeight = this._container.scrollHeight;
                 scrollWidth = this._container.scrollWidth;
 
-                this._xScrollElement.parentUpdated();
-                this._yScrollElement.parentUpdated();
+                this._scrollView.parentUpdated();
             }
         }, 300);
 
@@ -54,18 +51,17 @@ class Scroller {
             this._container.addEventListener(aKey, this._eventListener[aKey]);
         });
 
-        this._xScrollElement.parentUpdated();
-        this._yScrollElement.parentUpdated();
+        this._scrollView.parentUpdated();
     }
 
     setScrollTop(aScrollTop) {
         this._container.scrollTop = aScrollTop;
-        this._yScrollElement.scrollTopUpdated(aScrollTop);
+        this._scrollView.scrollTopUpdated(aScrollTop);
     }
 
     setScrollLeft(aScrollLeft) {
         this._container.scrollLeft = aScrollLeft;
-        this._xScrollElement.scrollLeftUpdated(aScrollLeft);
+        this._scrollView.scrollLeftUpdated(aScrollLeft);
     }
 
     destroy() {
@@ -75,17 +71,14 @@ class Scroller {
             this._container.removeEventListener(aKey, this._eventListener[aKey]);
         });
 
-        this._xScrollElement.destroy();
-        this._yScrollElement.destroy();
+        this._scrollView.destroy();
 
-        this._xScrollElement = null;
-        this._yScrollElement = null;
+        this._scrollView = null;
         this._container = null;
     }
 }
 
-Scroller.YScrollBar = YScrollBar;
-Scroller.XScrollBar = XScrollBar;
+Scroller.ScrollView = ScrollView;
 
 let target = document.querySelector('#container');
 

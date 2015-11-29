@@ -48,9 +48,7 @@
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var _xscrollbar = __webpack_require__(1);
-
-	var _yscrollbar = __webpack_require__(2);
+	var _scrollview = __webpack_require__(1);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -61,8 +59,7 @@
 	        _classCallCheck(this, Scroller);
 
 	        this._container = aElement;
-	        this._xScrollElement = new Scroller.XScrollBar(this._container);
-	        this._yScrollElement = new Scroller.YScrollBar(this._container);
+	        this._scrollView = new Scroller.ScrollView(this._container, this);
 
 	        this._eventListener = {
 	            wheel: function wheel(aEvent) {
@@ -91,8 +88,7 @@
 	                scrollHeight = _this._container.scrollHeight;
 	                scrollWidth = _this._container.scrollWidth;
 
-	                _this._xScrollElement.parentUpdated();
-	                _this._yScrollElement.parentUpdated();
+	                _this._scrollView.parentUpdated();
 	            }
 	        }, 300);
 
@@ -103,21 +99,20 @@
 	            _this._container.addEventListener(aKey, _this._eventListener[aKey]);
 	        });
 
-	        this._xScrollElement.parentUpdated();
-	        this._yScrollElement.parentUpdated();
+	        this._scrollView.parentUpdated();
 	    }
 
 	    _createClass(Scroller, [{
 	        key: 'setScrollTop',
 	        value: function setScrollTop(aScrollTop) {
 	            this._container.scrollTop = aScrollTop;
-	            this._yScrollElement.scrollTopUpdated(aScrollTop);
+	            this._scrollView.scrollTopUpdated(aScrollTop);
 	        }
 	    }, {
 	        key: 'setScrollLeft',
 	        value: function setScrollLeft(aScrollLeft) {
 	            this._container.scrollLeft = aScrollLeft;
-	            this._xScrollElement.scrollLeftUpdated(aScrollLeft);
+	            this._scrollView.scrollLeftUpdated(aScrollLeft);
 	        }
 	    }, {
 	        key: 'destroy',
@@ -130,11 +125,9 @@
 	                _this2._container.removeEventListener(aKey, _this2._eventListener[aKey]);
 	            });
 
-	            this._xScrollElement.destroy();
-	            this._yScrollElement.destroy();
+	            this._scrollView.destroy();
 
-	            this._xScrollElement = null;
-	            this._yScrollElement = null;
+	            this._scrollView = null;
 	            this._container = null;
 	        }
 	    }]);
@@ -142,8 +135,7 @@
 	    return Scroller;
 	})();
 
-	Scroller.YScrollBar = _yscrollbar.YScrollBar;
-	Scroller.XScrollBar = _xscrollbar.XScrollBar;
+	Scroller.ScrollView = _scrollview.ScrollView;
 
 	var target = document.querySelector('#container');
 
@@ -163,43 +155,119 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var XScrollBar = exports.XScrollBar = (function () {
-	    function XScrollBar(aParent) {
+	var ScrollView = exports.ScrollView = (function () {
+	    function ScrollView(aParentElement, aParentInstance) {
 	        var _this = this;
 
-	        _classCallCheck(this, XScrollBar);
+	        _classCallCheck(this, ScrollView);
 
-	        this._element = document.createElement('div');
-	        this._parent = aParent;
+	        this._xElement = document.createElement('div');
+	        this._yElement = document.createElement('div');
+	        this._parent = aParentElement;
 
-	        this._eventListener = {};
+	        var tmpMover = null;
+	        var tmpMovePointer = null;
+	        var tmpEndPointer = null;
 
-	        this._parent.appendChild(this._element);
-	        this._element.style.position = 'absolute';
-	        this._element.style.height = '10px';
-	        this._element.style.backgroundColor = 'rgba(0,0,0,0.6)';
-	        this._element.style.borderRadius = '5px';
-	        this._element.style.bottom = '0px';
-	        this._element.style.left = '0px';
+	        this._xEventListener = {
+	            mousedown: function mousedown(aEvent) {
+	                aEvent.preventDefault();
+	                tmpMover = aEvent.pageX;
 
-	        Object.keys(this._eventListener).forEach(function (aKey) {
-	            _this._container.addEventListener(aKey, _this._eventListener[aKey]);
+	                tmpMovePointer = function (e) {
+	                    e.preventDefault();
+	                    var distance = e.pageX - tmpMover;
+	                    tmpMover = e.pageX;
+
+	                    aParentInstance.setScrollLeft(_this._parent.scrollLeft + distance);
+	                };
+
+	                tmpEndPointer = function (e) {
+	                    e.preventDefault();
+	                    document.body.removeEventListener('mousemove', tmpMovePointer);
+	                    document.body.removeEventListener('mouseup', tmpEndPointer);
+	                };
+
+	                document.body.addEventListener('mousemove', tmpMovePointer);
+	                document.body.addEventListener('mouseup', tmpEndPointer);
+	            }
+	        };
+
+	        this._yEventListener = {
+	            mousedown: function mousedown(aEvent) {
+	                aEvent.preventDefault();
+	                tmpMover = aEvent.pageY;
+
+	                tmpMovePointer = function (e) {
+	                    e.preventDefault();
+	                    var distance = e.pageY - tmpMover;
+	                    tmpMover = e.pageY;
+
+	                    aParentInstance.setScrollTop(_this._parent.scrollTop + distance);
+	                };
+
+	                tmpEndPointer = function (e) {
+	                    e.preventDefault();
+	                    document.body.removeEventListener('mousemove', tmpMovePointer);
+	                    document.body.removeEventListener('mouseup', tmpEndPointer);
+
+	                    tmpMovePointer = null;
+	                    tmpEndPointer = null;
+	                };
+
+	                document.body.addEventListener('mousemove', tmpMovePointer);
+	                document.body.addEventListener('mouseup', tmpEndPointer);
+	            }
+	        };
+
+	        this._parent.appendChild(this._xElement);
+	        this._xElement.style.position = 'absolute';
+	        this._xElement.style.height = '6px';
+	        this._xElement.style.backgroundColor = 'rgba(0,0,0,0.6)';
+	        this._xElement.style.borderRadius = '3px';
+	        this._xElement.style.left = '0px';
+
+	        this._parent.appendChild(this._yElement);
+	        this._yElement.style.position = 'absolute';
+	        this._yElement.style.width = '6px';
+	        this._yElement.style.backgroundColor = 'rgba(0,0,0,0.6)';
+	        this._yElement.style.borderRadius = '3px';
+	        this._yElement.style.top = '0px';
+
+	        Object.keys(this._xEventListener).forEach(function (aKey) {
+	            _this._xElement.addEventListener(aKey, _this._xEventListener[aKey]);
+	        });
+
+	        Object.keys(this._yEventListener).forEach(function (aKey) {
+	            _this._yElement.addEventListener(aKey, _this._yEventListener[aKey]);
 	        });
 
 	        this.parentUpdated();
-	        this.scrollLeftUpdated(aParent.scrollLeft);
-
-	        this._parent.appendChild(this._element);
+	        this.scrollTopUpdated();
+	        this.scrollLeftUpdated();
 	    }
 
-	    _createClass(XScrollBar, [{
+	    _createClass(ScrollView, [{
+	        key: 'scrollTopUpdated',
+	        value: function scrollTopUpdated() {
+	            if (this._parentScrollHeight > this._parentHeight) {
+	                var partSize = this._parent.scrollTop / (this._parentScrollHeight - this._parentHeight);
+	                partSize = partSize * (this._parentHeight - this._elementHeight);
+	                this._yElement.style.top = this._parent.scrollTop + partSize + 'px';
+	            }
+
+	            this._xElement.style.top = this._parent.scrollTop + this._parentHeight - 6 + 'px';
+	        }
+	    }, {
 	        key: 'scrollLeftUpdated',
-	        value: function scrollLeftUpdated(aY) {
+	        value: function scrollLeftUpdated() {
 	            if (this._parentScrollWidth > this._parentWidth) {
 	                var partSize = this._parent.scrollLeft / (this._parentScrollWidth - this._parentWidth);
 	                partSize = partSize * (this._parentWidth - this._elementWidth);
-	                this._element.style.left = this._parent.scrollLeft + partSize + 'px';
+	                this._xElement.style.left = this._parent.scrollLeft + partSize + 'px';
 	            }
+
+	            this._yElement.style.left = this._parent.scrollLeft + this._parentWidth - 6 + 'px';
 	        }
 	    }, {
 	        key: 'parentUpdated',
@@ -207,98 +275,26 @@
 	            this._parentWidth = this._parent.clientWidth;
 	            this._parentScrollWidth = this._parent.scrollWidth;
 	            this._elementWidth = this._parentWidth * this._parentWidth / this._parentScrollWidth;
-
-	            if (this._parentWidth < this._parentScrollWidth) {
-	                this._element.style.display = 'block';
-
-	                this._element.style.width = this._elementWidth + 'px';
-
-	                this.scrollLeftUpdated(this._parent.scrollLeft);
-	            } else {
-	                this._element.style.display = 'none';
-	            }
-	        }
-	    }, {
-	        key: 'destroy',
-	        value: function destroy() {
-	            var _this2 = this;
-
-	            Object.keys(this._eventListener).forEach(function (aKey) {
-	                _this2._container.removeEventListener(aKey, _this2._eventListener[aKey]);
-	            });
-	        }
-	    }]);
-
-	    return XScrollBar;
-	})();
-
-/***/ },
-/* 2 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var YScrollBar = exports.YScrollBar = (function () {
-	    function YScrollBar(aParent) {
-	        var _this = this;
-
-	        _classCallCheck(this, YScrollBar);
-
-	        this._element = document.createElement('div');
-	        this._parent = aParent;
-
-	        this._eventListener = {};
-
-	        this._parent.appendChild(this._element);
-	        this._element.style.position = 'absolute';
-	        this._element.style.width = '10px';
-	        this._element.style.backgroundColor = 'rgba(0,0,0,0.6)';
-	        this._element.style.borderRadius = '5px';
-	        this._element.style.top = '0px';
-	        this._element.style.right = '0px';
-
-	        Object.keys(this._eventListener).forEach(function (aKey) {
-	            _this._container.addEventListener(aKey, _this._eventListener[aKey]);
-	        });
-
-	        this.parentUpdated();
-	        this.scrollTopUpdated(aParent.scrollTop);
-
-	        this._parent.appendChild(this._element);
-	    }
-
-	    _createClass(YScrollBar, [{
-	        key: 'scrollTopUpdated',
-	        value: function scrollTopUpdated(aY) {
-	            if (this._parentScrollHeight > this._parentHeight) {
-	                var partSize = this._parent.scrollTop / (this._parentScrollHeight - this._parentHeight);
-	                partSize = partSize * (this._parentHeight - this._elementHeight);
-	                this._element.style.top = this._parent.scrollTop + partSize + 'px';
-	            }
-	        }
-	    }, {
-	        key: 'parentUpdated',
-	        value: function parentUpdated() {
 	            this._parentHeight = this._parent.clientHeight;
 	            this._parentScrollHeight = this._parent.scrollHeight;
 	            this._elementHeight = this._parentHeight * this._parentHeight / this._parentScrollHeight;
 
-	            if (this._parentHeight < this._parentScrollHeight) {
-	                this._element.style.display = 'block';
+	            if (this._parentWidth < this._parentScrollWidth) {
+	                this._xElement.style.display = 'block';
+	                this._xElement.style.width = this._elementWidth + 'px';
 
-	                this._element.style.height = this._elementHeight + 'px';
+	                this.scrollLeftUpdated(this._parent.scrollLeft);
+	            } else {
+	                this._xElement.style.display = 'none';
+	            }
+
+	            if (this._parentHeight < this._parentScrollHeight) {
+	                this._yElement.style.display = 'block';
+	                this._yElement.style.height = this._elementHeight + 'px';
 
 	                this.scrollTopUpdated(this._parent.scrollTop);
 	            } else {
-	                this._element.style.display = 'none';
+	                this._yElement.style.display = 'none';
 	            }
 	        }
 	    }, {
@@ -306,13 +302,19 @@
 	        value: function destroy() {
 	            var _this2 = this;
 
-	            Object.keys(this._eventListener).forEach(function (aKey) {
-	                _this2._container.removeEventListener(aKey, _this2._eventListener[aKey]);
+	            Object.keys(this._xEventListener).forEach(function (aKey) {
+	                _this2._xElement.removeEventListener(aKey, _this2._xEventListener[aKey]);
 	            });
+
+	            Object.keys(this._yEventListener).forEach(function (aKey) {
+	                _this2._yElement.removeEventListener(aKey, _this2._yEventListener[aKey]);
+	            });
+
+	            this._parent = null;
 	        }
 	    }]);
 
-	    return YScrollBar;
+	    return ScrollView;
 	})();
 
 /***/ }
