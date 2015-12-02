@@ -1,92 +1,51 @@
 'use strict';
 
+import {generateEventHandlerForElement, applyOptionsToScollBarElement} from './scrollviewhelper'
+
 export class ScrollView {
     constructor(aParentInstance, aOptions) {
         this._parent = aParentInstance._container;
         this._scrollerParent = aParentInstance;
+        // setup scroller elements
         this._xElement = document.createElement('div');
         this._yElement = document.createElement('div');
 
-        this._xEventListener = {
-            mousedown: (aEvent) => {
-                aEvent.preventDefault();
-                let tmpMover = aEvent.pageX;
+        // create the event handler for the scroller elements
+        this._xEventListener = generateEventHandlerForElement.call(this, 'pageX', 'setScrollLeft');
+        this._yEventListener = generateEventHandlerForElement.call(this, 'pageY', 'setScrollTop');
 
-                let tmpMovePointer = (e) => {
-                    e.preventDefault();
-                    let distance = e.pageX - tmpMover;
-                    tmpMover = e.pageX;
-
-                    aParentInstance.setScrollLeft(this._parent.scrollLeft + distance);
-                }
-
-                let tmpEndPointer = (e) => {
-                    e.preventDefault();
-                    document.body.removeEventListener('mousemove', tmpMovePointer);
-                    document.body.removeEventListener('mouseup', tmpEndPointer);
-                    document.body.removeEventListener('mouseleave', tmpEndPointer);
-                    
-                    let tmpMovePointer = null;
-                    let tmpEndPointer = null;
-                }
-
-                document.body.addEventListener('mousemove', tmpMovePointer);
-                document.body.addEventListener('mouseup', tmpEndPointer);
-                document.body.addEventListener('mouseleave', tmpEndPointer);
-            }
-        };
-
-        this._yEventListener = {
-            mousedown: (aEvent) => {
-                aEvent.preventDefault();
-                let tmpMover = aEvent.pageY;
-
-                let tmpMovePointer = (e) => {
-                    e.preventDefault();
-                    let distance = e.pageY - tmpMover;
-                    tmpMover = e.pageY;
-
-                    aParentInstance.setScrollTop(this._parent.scrollTop + distance);
-                }
-
-                let tmpEndPointer = (e) => {
-                    e.preventDefault();
-                    document.body.removeEventListener('mousemove', tmpMovePointer);
-                    document.body.removeEventListener('mouseup', tmpEndPointer);
-                    document.body.removeEventListener('mouseleave', tmpEndPointer);
-
-                    tmpMovePointer = null;
-                    tmpEndPointer = null;
-                }
-
-                document.body.addEventListener('mousemove', tmpMovePointer);
-                document.body.addEventListener('mouseup', tmpEndPointer);
-                document.body.addEventListener('mouseleave', tmpEndPointer);
-            }
-        };
-
-        this._parent.appendChild(this._xElement);
-        this._xElement.style.position = 'absolute';
+        // style some x specific things
         this._xElement.style.height = '6px';
-        this._xElement.style.backgroundColor = 'rgba(0,0,0,0.6)';
-        this._xElement.style.borderRadius = '3px';
         this._xElement.style.left = '0px';
 
-        this._parent.appendChild(this._yElement);
-        this._yElement.style.position = 'absolute';
+        // style some y specific things
         this._yElement.style.width = '6px';
-        this._yElement.style.backgroundColor = 'rgba(0,0,0,0.6)';
-        this._yElement.style.borderRadius = '3px';
         this._yElement.style.top = '0px';
 
+        // style some styles that should apply to x and y
+        this._xElement.style.position = this._yElement.style.position = 'absolute';
+        this._xElement.style.backgroundColor = this._yElement.style.backgroundColor = 'rgba(0,0,0,0.6)';
+        this._xElement.style.borderRadius = this._yElement.style.borderRadius = '3px';
+
+        // and apply the options to the scrollbar elements
+        applyOptionsToScollBarElement(this._xElement, 'xElement', aOptions);
+        applyOptionsToScollBarElement(this._yElement, 'yElement', aOptions);
+
+        // and append the elements to the DOM tree
+        this._parent.appendChild(this._xElement);
+        this._parent.appendChild(this._yElement);
+
+        // then append the event listeners to x
         Object.keys(this._xEventListener).forEach((aKey) => {
             this._xElement.addEventListener(aKey, this._xEventListener[aKey]);
         });
-
+        
+        // and y
         Object.keys(this._yEventListener).forEach((aKey) => {
             this._yElement.addEventListener(aKey, this._yEventListener[aKey]);
         });
 
+        // and call all update functions initially
         this.parentUpdated();
         this.scrollTopUpdated();
         this.scrollLeftUpdated();
@@ -152,5 +111,7 @@ export class ScrollView {
 
         this._parent = null;
         this._scrollerParent = null;
+        this._xElement = null;
+        this._yElement = null;
     }
 }

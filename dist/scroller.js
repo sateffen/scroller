@@ -59,7 +59,7 @@
 	        _classCallCheck(this, Scroller);
 
 	        this._container = aElement;
-	        this._scrollView = new Scroller.ScrollView(this._container, this);
+	        this._scrollView = new Scroller.ScrollView(this, aOptions);
 
 	        this._eventListener = {
 	            wheel: function wheel(aEvent) {
@@ -74,13 +74,13 @@
 	        var scrollWidth = this._container.scrollWidth;
 
 	        this._intervalPointer = window.setInterval(function () {
-	            var p = _this._container.parentElement;
+	            var potentialRootElement = _this._container.parentElement;
 
-	            while (p != undefined && p !== document.body) {
-	                p = p.parentElement;
+	            while (potentialRootElement != undefined && potentialRootElement !== document.body) {
+	                potentialRootElement = potentialRootElement.parentElement;
 	            }
 
-	            if (p == undefined) {
+	            if (potentialRootElement == undefined) {
 	                _this.destroy();
 	            } else if (containerHeight !== _this._container.clientHeight || containerWidth !== _this._container.clientWidth || scrollHeight !== _this._container.scrollHeight || scrollWidth !== _this._container.scrollWidth) {
 	                containerHeight = _this._container.clientHeight;
@@ -90,7 +90,7 @@
 
 	                _this._scrollView.parentUpdated();
 	            }
-	        }, 300);
+	        }, aOptions.checkInterval || 300);
 
 	        this._container.style.overflow = 'hidden';
 	        this._container.style.position = 'relative';
@@ -104,15 +104,37 @@
 
 	    _createClass(Scroller, [{
 	        key: 'setScrollTop',
-	        value: function setScrollTop(aScrollTop) {
-	            this._container.scrollTop = aScrollTop;
-	            this._scrollView.scrollTopUpdated(aScrollTop);
+	        value: function setScrollTop(aScrollTop, aOperation) {
+	            switch (aOperation) {
+	                case 'add':
+	                    this._container.scrollTop += aScrollTop;
+	                    break;
+	                case 'substract':
+	                    this._container.scrollTop -= aScrollTop;
+	                    break;
+	                default:
+	                    this._container.scrollTop = aScrollTop;
+	                    break;
+	            }
+
+	            this._scrollView.scrollTopUpdated(this._container.scrollTop);
 	        }
 	    }, {
 	        key: 'setScrollLeft',
-	        value: function setScrollLeft(aScrollLeft) {
-	            this._container.scrollLeft = aScrollLeft;
-	            this._scrollView.scrollLeftUpdated(aScrollLeft);
+	        value: function setScrollLeft(aScrollLeft, aOperation) {
+	            switch (aOperation) {
+	                case 'add':
+	                    this._container.scrollLeft += aScrollLeft;
+	                    break;
+	                case 'substract':
+	                    this._container.scrollLeft -= aScrollLeft;
+	                    break;
+	                default:
+	                    this._container.scrollLeft = aScrollLeft;
+	                    break;
+	            }
+
+	            this._scrollView.scrollLeftUpdated(this._container.scrollLeft);
 	        }
 	    }, {
 	        key: 'destroy',
@@ -143,7 +165,7 @@
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -152,96 +174,60 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	exports.ScrollView = undefined;
+
+	var _scrollviewhelper = __webpack_require__(2);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var ScrollView = exports.ScrollView = (function () {
-	    function ScrollView(aParentElement, aParentInstance) {
+	    function ScrollView(aParentInstance, aOptions) {
 	        var _this = this;
 
 	        _classCallCheck(this, ScrollView);
 
+	        this._parent = aParentInstance._container;
+	        this._scrollerParent = aParentInstance;
+	        // setup scroller elements
 	        this._xElement = document.createElement('div');
 	        this._yElement = document.createElement('div');
-	        this._parent = aParentElement;
 
-	        var tmpMover = null;
-	        var tmpMovePointer = null;
-	        var tmpEndPointer = null;
+	        // create the event handler for the scroller elements
+	        this._xEventListener = _scrollviewhelper.generateEventHandlerForElement.call(this, 'pageX', 'setScrollLeft');
+	        this._yEventListener = _scrollviewhelper.generateEventHandlerForElement.call(this, 'pageY', 'setScrollTop');
 
-	        this._xEventListener = {
-	            mousedown: function mousedown(aEvent) {
-	                aEvent.preventDefault();
-	                tmpMover = aEvent.pageX;
-
-	                tmpMovePointer = function (e) {
-	                    e.preventDefault();
-	                    var distance = e.pageX - tmpMover;
-	                    tmpMover = e.pageX;
-
-	                    aParentInstance.setScrollLeft(_this._parent.scrollLeft + distance);
-	                };
-
-	                tmpEndPointer = function (e) {
-	                    e.preventDefault();
-	                    document.body.removeEventListener('mousemove', tmpMovePointer);
-	                    document.body.removeEventListener('mouseup', tmpEndPointer);
-	                };
-
-	                document.body.addEventListener('mousemove', tmpMovePointer);
-	                document.body.addEventListener('mouseup', tmpEndPointer);
-	            }
-	        };
-
-	        this._yEventListener = {
-	            mousedown: function mousedown(aEvent) {
-	                aEvent.preventDefault();
-	                tmpMover = aEvent.pageY;
-
-	                tmpMovePointer = function (e) {
-	                    e.preventDefault();
-	                    var distance = e.pageY - tmpMover;
-	                    tmpMover = e.pageY;
-
-	                    aParentInstance.setScrollTop(_this._parent.scrollTop + distance);
-	                };
-
-	                tmpEndPointer = function (e) {
-	                    e.preventDefault();
-	                    document.body.removeEventListener('mousemove', tmpMovePointer);
-	                    document.body.removeEventListener('mouseup', tmpEndPointer);
-
-	                    tmpMovePointer = null;
-	                    tmpEndPointer = null;
-	                };
-
-	                document.body.addEventListener('mousemove', tmpMovePointer);
-	                document.body.addEventListener('mouseup', tmpEndPointer);
-	            }
-	        };
-
-	        this._parent.appendChild(this._xElement);
-	        this._xElement.style.position = 'absolute';
+	        // style some x specific things
 	        this._xElement.style.height = '6px';
-	        this._xElement.style.backgroundColor = 'rgba(0,0,0,0.6)';
-	        this._xElement.style.borderRadius = '3px';
 	        this._xElement.style.left = '0px';
 
-	        this._parent.appendChild(this._yElement);
-	        this._yElement.style.position = 'absolute';
+	        // style some y specific things
 	        this._yElement.style.width = '6px';
-	        this._yElement.style.backgroundColor = 'rgba(0,0,0,0.6)';
-	        this._yElement.style.borderRadius = '3px';
 	        this._yElement.style.top = '0px';
 
+	        // style some styles that should apply to x and y
+	        this._xElement.style.position = this._yElement.style.position = 'absolute';
+	        this._xElement.style.backgroundColor = this._yElement.style.backgroundColor = 'rgba(0,0,0,0.6)';
+	        this._xElement.style.borderRadius = this._yElement.style.borderRadius = '3px';
+
+	        // and apply the options to the scrollbar elements
+	        (0, _scrollviewhelper.applyOptionsToScollBarElement)(this._xElement, 'xElement', aOptions);
+	        (0, _scrollviewhelper.applyOptionsToScollBarElement)(this._yElement, 'yElement', aOptions);
+
+	        // and append the elements to the DOM tree
+	        this._parent.appendChild(this._xElement);
+	        this._parent.appendChild(this._yElement);
+
+	        // then append the event listeners to x
 	        Object.keys(this._xEventListener).forEach(function (aKey) {
 	            _this._xElement.addEventListener(aKey, _this._xEventListener[aKey]);
 	        });
 
+	        // and y
 	        Object.keys(this._yEventListener).forEach(function (aKey) {
 	            _this._yElement.addEventListener(aKey, _this._yEventListener[aKey]);
 	        });
 
+	        // and call all update functions initially
 	        this.parentUpdated();
 	        this.scrollTopUpdated();
 	        this.scrollLeftUpdated();
@@ -311,11 +297,112 @@
 	            });
 
 	            this._parent = null;
+	            this._scrollerParent = null;
+	            this._xElement = null;
+	            this._yElement = null;
 	        }
 	    }]);
 
 	    return ScrollView;
 	})();
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.generateEventHandlerForElement = generateEventHandlerForElement;
+	exports.applyOptionsToScollBarElement = applyOptionsToScollBarElement;
+	function generateEventHandlerForElement(aAttribute, aParentWriteCallback) {
+	    var _this = this;
+
+	    return {
+	        mousedown: function mousedown(aEvent) {
+	            aEvent.preventDefault();
+	            var tmpMover = aEvent[aAttribute];
+
+	            var tmpMovePointer = function tmpMovePointer(e) {
+	                e.preventDefault();
+	                var distance = e[aAttribute] - tmpMover;
+	                tmpMover = e[aAttribute];
+
+	                _this._scrollerParent[aParentWriteCallback](distance, 'add');
+	            };
+
+	            var tmpEndPointer = function tmpEndPointer(e) {
+	                e.preventDefault();
+	                document.body.removeEventListener('mousemove', tmpMovePointer);
+	                document.body.removeEventListener('mouseup', tmpEndPointer);
+	                document.body.removeEventListener('mouseleave', tmpEndPointer);
+
+	                var tmpMovePointer = null;
+	                var tmpEndPointer = null;
+	            };
+
+	            document.body.addEventListener('mousemove', tmpMovePointer);
+	            document.body.addEventListener('mouseup', tmpEndPointer);
+	            document.body.addEventListener('mouseleave', tmpEndPointer);
+	        },
+	        touchstart: function touchstart(aEvent) {
+	            aEvent.preventDefault();
+	            var touchToTrack = aEvent.which || 0;
+	            var tmpMover = aEvent.touches[touchToTrack][aAttribute];
+
+	            var tmpMovePointer = function tmpMovePointer(e) {
+	                if (e.which !== touchToTrack) {
+	                    return;
+	                }
+
+	                e.preventDefault();
+	                var distance = e.touches[touchToTrack][aAttribute] - tmpMover;
+	                tmpMover = e.touches[touchToTrack][aAttribute];
+
+	                _this._scrollerParent[aParentWriteCallback](distance, 'add');
+	            };
+
+	            var _tmpEndPointer = function tmpEndPointer(e) {
+	                if (e.which !== touchToTrack) {
+	                    return;
+	                }
+
+	                e.preventDefault();
+	                document.body.removeEventListener('touchmove', tmpMovePointer);
+	                document.body.removeEventListener('touchend', _tmpEndPointer);
+	                document.body.removeEventListener('touchleave', _tmpEndPointer);
+
+	                tmpMovePointer = null;
+	                _tmpEndPointer = null;
+	            };
+
+	            document.body.addEventListener('touchmove', tmpMovePointer);
+	            document.body.addEventListener('touchend', _tmpEndPointer);
+	            document.body.addEventListener('touchleave', _tmpEndPointer);
+	        }
+	    };
+	}
+
+	function applyOptionsToScollBarElement(aElement, aElementName, aOptions) {
+	    var stylesKey = aElementName + 'Styles';
+	    var classKey = aElement + 'Class';
+
+	    if (aOptions[stylesKey] && toString.call(aOptions[stylesKey]) === '[object Object]') {
+	        Object.keys(aOptions[stylesKey]).forEach(function (aKey) {
+	            aElement.style[aKey] = aOptions[stylesKey][aKey];
+	        });
+	    }
+
+	    if (aOptions[classKey] && toString.call(aOptions[classKey]) === '[object String]') {
+	        aElement.classList.add(aOptions[classKey]);
+	    } else if (Array.isArray(aOptions[classKey])) {
+	        aOptions[classKey].forEach(function (aClass) {
+	            aElement.classList.add(aClass);
+	        });
+	    }
+	}
 
 /***/ }
 /******/ ]);

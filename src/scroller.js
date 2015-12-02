@@ -6,7 +6,7 @@ class Scroller {
     constructor(aElement, aOptions) {
         this._container = aElement;
         this._scrollView = new Scroller.ScrollView(this, aOptions);
-
+        
         this._eventListener = {
             wheel: (aEvent) => {
                 this.setScrollTop(this._container.scrollTop + aEvent.deltaY);
@@ -20,13 +20,13 @@ class Scroller {
         let scrollWidth = this._container.scrollWidth;
 
         this._intervalPointer = window.setInterval(() => {
-            let p = this._container.parentElement;
+            let potentialRootElement = this._container.parentElement;
 
-            while (p != undefined && p !== document.body) {
-                p = p.parentElement;
+            while (potentialRootElement != undefined && potentialRootElement !== document.body) {
+                potentialRootElement = potentialRootElement.parentElement;
             }
 
-            if (p == undefined) {
+            if (potentialRootElement == undefined) {
                 this.destroy();
             }
             else if (
@@ -42,7 +42,7 @@ class Scroller {
 
                 this._scrollView.parentUpdated();
             }
-        }, 300);
+        }, aOptions.checkInterval || 300);
 
         this._container.style.overflow = 'hidden';
         this._container.style.position = 'relative';
@@ -54,14 +54,36 @@ class Scroller {
         this._scrollView.parentUpdated();
     }
 
-    setScrollTop(aScrollTop) {
-        this._container.scrollTop = aScrollTop;
-        this._scrollView.scrollTopUpdated(aScrollTop);
+    setScrollTop(aScrollTop, aOperation) {
+        switch (aOperation) {
+            case 'add':
+                this._container.scrollTop += aScrollTop;
+                break;
+            case 'substract':
+                this._container.scrollTop -= aScrollTop;
+                break;
+            default:
+                this._container.scrollTop = aScrollTop;
+                break;
+        }
+
+        this._scrollView.scrollTopUpdated(this._container.scrollTop);
     }
 
-    setScrollLeft(aScrollLeft) {
-        this._container.scrollLeft = aScrollLeft;
-        this._scrollView.scrollLeftUpdated(aScrollLeft);
+    setScrollLeft(aScrollLeft, aOperation) {
+        switch (aOperation) {
+            case 'add':
+                this._container.scrollLeft += aScrollLeft;
+                break;
+            case 'substract':
+                this._container.scrollLeft -= aScrollLeft;
+                break;
+            default:
+                this._container.scrollLeft = aScrollLeft;
+                break;
+        }
+
+        this._scrollView.scrollLeftUpdated(this._container.scrollLeft);
     }
 
     destroy() {
