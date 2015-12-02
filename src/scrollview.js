@@ -6,13 +6,17 @@ export class ScrollView {
     constructor(aParentInstance, aOptions) {
         this._parent = aParentInstance._container;
         this._scrollerParent = aParentInstance;
+        
+        this._scrollHeightFactor = this._parent.scrollHeight / this._parent.clientHeight;
+        this._scrollWidthFactor = this._parent.scrollWidth / this._parent.clientWidth;
+        
         // setup scroller elements
         this._xElement = document.createElement('div');
         this._yElement = document.createElement('div');
 
         // create the event handler for the scroller elements
-        this._xEventListener = generateEventHandlerForElement.call(this, 'pageX', 'setScrollLeft');
-        this._yEventListener = generateEventHandlerForElement.call(this, 'pageY', 'setScrollTop');
+        this._xEventListener = generateEventHandlerForElement.call(this, 'pageX', '_scrollWidthFactor', 'setScrollLeft');
+        this._yEventListener = generateEventHandlerForElement.call(this, 'pageY', '_scrollHeightFactor', 'setScrollTop');
 
         // style some x specific things
         this._xElement.style.height = '6px';
@@ -80,6 +84,8 @@ export class ScrollView {
         this._parentHeight = this._parent.clientHeight;
         this._parentScrollHeight = this._parent.scrollHeight;
         this._elementHeight = this._parentHeight * this._parentHeight / this._parentScrollHeight;
+        this._scrollHeightFactor = this._parent.scrollHeight / this._parent.clientHeight;
+        this._scrollWidthFactor = this._parent.scrollWidth / this._parent.clientWidth;
 
         // determine visibility of x element
         if (this._parentWidth < this._parentScrollWidth) {

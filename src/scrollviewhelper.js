@@ -1,6 +1,6 @@
 'use strict';
 
-export function generateEventHandlerForElement(aAttribute, aParentWriteCallback) {
+export function generateEventHandlerForElement(aAttribute, aPropertyFactor, aParentWriteCallback) {
     return {
         mousedown: (aEvent) => {
             aEvent.preventDefault();
@@ -8,7 +8,7 @@ export function generateEventHandlerForElement(aAttribute, aParentWriteCallback)
 
             let tmpMovePointer = (e) => {
                 e.preventDefault();
-                let distance = e[aAttribute] - tmpMover;
+                let distance = (e[aAttribute] - tmpMover) * this[aPropertyFactor];
                 tmpMover = e[aAttribute];
 
                 this._scrollerParent[aParentWriteCallback](distance, 'add');
@@ -39,7 +39,7 @@ export function generateEventHandlerForElement(aAttribute, aParentWriteCallback)
                 }
 
                 e.preventDefault();
-                let distance = e.touches[touchToTrack][aAttribute] - tmpMover;
+                let distance = (e.touches[touchToTrack][aAttribute] - tmpMover) * this[aPropertyFactor];
                 tmpMover = e.touches[touchToTrack][aAttribute];
 
                 this._scrollerParent[aParentWriteCallback](distance, 'add');
