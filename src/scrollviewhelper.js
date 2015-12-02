@@ -20,8 +20,8 @@ export function generateEventHandlerForElement(aAttribute, aParentWriteCallback)
                 document.body.removeEventListener('mouseup', tmpEndPointer);
                 document.body.removeEventListener('mouseleave', tmpEndPointer);
 
-                let tmpMovePointer = null;
-                let tmpEndPointer = null;
+                tmpMovePointer = null;
+                tmpEndPointer = null;
             }
 
             document.body.addEventListener('mousemove', tmpMovePointer);

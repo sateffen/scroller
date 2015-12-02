@@ -104,40 +104,58 @@ export class ScrollContainer {
         if (this._options.disableYScrolling) {
             return;
         }
+        let tmp = this._container.scrollTop;
 
         switch (aOperation) {
             case 'add':
-                this._container.scrollTop += aScrollTop;
+                tmp += aScrollTop;
                 break;
             case 'substract':
-                this._container.scrollTop -= aScrollTop;
+                tmp -= aScrollTop;
                 break;
             default:
-                this._container.scrollTop = aScrollTop;
+                tmp = aScrollTop;
                 break;
         }
 
-        this._scrollView.scrollTopUpdated(this._container.scrollTop);
+        if (tmp < 0) {
+            tmp = 0;
+        }
+        else if (tmp > this._container.scrollHeight - this._container.clientHeight) {
+            tmp = this._container.scrollHeight - this._container.clientHeight;
+        }
+
+        this._scrollView.scrollTopUpdated(tmp);
+        this._container.scrollTop = tmp;
     }
 
     setScrollLeft(aScrollLeft, aOperation) {
         if (this._options.disableXScrolling) {
             return;
         }
+        let tmp = this._container.scrollLeft;
 
         switch (aOperation) {
             case 'add':
-                this._container.scrollLeft += aScrollLeft;
+                tmp += aScrollLeft;
                 break;
             case 'substract':
-                this._container.scrollLeft -= aScrollLeft;
+                tmp -= aScrollLeft;
                 break;
             default:
-                this._container.scrollLeft = aScrollLeft;
+                tmp = aScrollLeft;
                 break;
         }
 
-        this._scrollView.scrollLeftUpdated(this._container.scrollLeft);
+        if (tmp < 0) {
+            tmp = 0;
+        }
+        else if (tmp > this._container.scrollWidth - this._container.clientWidth) {
+            tmp = this._container.scrollWidth - this._container.clientWidth;
+        }
+
+        this._scrollView.scrollLeftUpdated(tmp);
+        this._container.scrollLeft = tmp;
     }
 
     destroy() {

@@ -55,24 +55,24 @@ export class ScrollView {
         this.scrollLeftUpdated();
     }
 
-    scrollTopUpdated() {
+    scrollTopUpdated(aScrollTop) {
         if (this._parentScrollHeight > this._parentHeight) {
-            let partSize = this._parent.scrollTop / (this._parentScrollHeight - this._parentHeight);
+            let partSize = aScrollTop / (this._parentScrollHeight - this._parentHeight);
             partSize = partSize * (this._parentHeight - this._elementHeight);
-            this._yElement.style.top = (this._parent.scrollTop + partSize) + 'px';
+            this._yElement.style.top = (aScrollTop + partSize) + 'px';
         }
 
-        this._xElement.style.top = (this._parent.scrollTop + this._parentHeight - 6) + 'px';
+        this._xElement.style.top = (aScrollTop + this._parentHeight - 6) + 'px';
     }
 
-    scrollLeftUpdated() {
+    scrollLeftUpdated(aScrollLeft) {
         if (this._parentScrollWidth > this._parentWidth) {
-            let partSize = this._parent.scrollLeft / (this._parentScrollWidth - this._parentWidth);
+            let partSize = aScrollLeft / (this._parentScrollWidth - this._parentWidth);
             partSize = partSize * (this._parentWidth - this._elementWidth);
-            this._xElement.style.left = (this._parent.scrollLeft + partSize) + 'px';
+            this._xElement.style.left = (aScrollLeft + partSize) + 'px';
         }
 
-        this._yElement.style.left = (this._parent.scrollLeft + this._parentWidth - 6) + 'px';
+        this._yElement.style.left = (aScrollLeft + this._parentWidth - 6) + 'px';
     }
 
     parentUpdated() {
