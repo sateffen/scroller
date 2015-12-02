@@ -32,9 +32,13 @@ export class ScrollView {
         applyOptionsToScollBarElement(this._yElement, 'yElement', aOptions);
 
         // and append the elements to the DOM tree
-        this._parent.appendChild(this._xElement);
-        this._parent.appendChild(this._yElement);
-
+        if (!aOptions.disableXScrolling) {
+            this._parent.appendChild(this._xElement);
+        }
+        if (!aOptions.disableYScrolling) {
+            this._parent.appendChild(this._yElement);
+        }
+        
         // then append the event listeners to x
         Object.keys(this._xEventListener).forEach((aKey) => {
             this._xElement.addEventListener(aKey, this._xEventListener[aKey]);
