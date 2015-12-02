@@ -51,8 +51,8 @@ export class ScrollView {
 
         // and call all update functions initially
         this.parentUpdated();
-        this.scrollTopUpdated();
-        this.scrollLeftUpdated();
+        this.scrollTopUpdated(this._parent.scrollTop);
+        this.scrollLeftUpdated(this._parent.scrollLeft);
     }
 
     scrollTopUpdated(aScrollTop) {
