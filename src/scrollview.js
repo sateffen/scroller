@@ -7,16 +7,12 @@ export class ScrollView {
         this._xElement = document.createElement('div');
         this._yElement = document.createElement('div');
 
-        let tmpMover = null;
-        let tmpMovePointer = null;
-        let tmpEndPointer = null;
-
         this._xEventListener = {
             mousedown: (aEvent) => {
                 aEvent.preventDefault();
-                tmpMover = aEvent.pageX;
+                let tmpMover = aEvent.pageX;
 
-                tmpMovePointer = (e) => {
+                let tmpMovePointer = (e) => {
                     e.preventDefault();
                     let distance = e.pageX - tmpMover;
                     tmpMover = e.pageX;
@@ -24,23 +20,28 @@ export class ScrollView {
                     aParentInstance.setScrollLeft(this._parent.scrollLeft + distance);
                 }
 
-                tmpEndPointer = (e) => {
+                let tmpEndPointer = (e) => {
                     e.preventDefault();
                     document.body.removeEventListener('mousemove', tmpMovePointer);
                     document.body.removeEventListener('mouseup', tmpEndPointer);
+                    document.body.removeEventListener('mouseleave', tmpEndPointer);
+                    
+                    let tmpMovePointer = null;
+                    let tmpEndPointer = null;
                 }
 
                 document.body.addEventListener('mousemove', tmpMovePointer);
                 document.body.addEventListener('mouseup', tmpEndPointer);
+                document.body.addEventListener('mouseleave', tmpEndPointer);
             }
         };
 
         this._yEventListener = {
             mousedown: (aEvent) => {
                 aEvent.preventDefault();
-                tmpMover = aEvent.pageY;
+                let tmpMover = aEvent.pageY;
 
-                tmpMovePointer = (e) => {
+                let tmpMovePointer = (e) => {
                     e.preventDefault();
                     let distance = e.pageY - tmpMover;
                     tmpMover = e.pageY;
@@ -48,17 +49,19 @@ export class ScrollView {
                     aParentInstance.setScrollTop(this._parent.scrollTop + distance);
                 }
 
-                tmpEndPointer = (e) => {
+                let tmpEndPointer = (e) => {
                     e.preventDefault();
                     document.body.removeEventListener('mousemove', tmpMovePointer);
                     document.body.removeEventListener('mouseup', tmpEndPointer);
-                    
+                    document.body.removeEventListener('mouseleave', tmpEndPointer);
+
                     tmpMovePointer = null;
                     tmpEndPointer = null;
                 }
 
                 document.body.addEventListener('mousemove', tmpMovePointer);
                 document.body.addEventListener('mouseup', tmpEndPointer);
+                document.body.addEventListener('mouseleave', tmpEndPointer);
             }
         };
 
