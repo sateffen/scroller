@@ -51,8 +51,6 @@ export class ScrollView {
 
         // and call all update functions initially
         this.parentUpdated();
-        this.scrollTopUpdated(this._parent.scrollTop);
-        this.scrollLeftUpdated(this._parent.scrollLeft);
     }
 
     scrollTopUpdated(aScrollTop) {
@@ -83,21 +81,21 @@ export class ScrollView {
         this._parentScrollHeight = this._parent.scrollHeight;
         this._elementHeight = this._parentHeight * this._parentHeight / this._parentScrollHeight;
 
+        // determine visibility of x element
         if (this._parentWidth < this._parentScrollWidth) {
+            this.scrollTopUpdated(this._parent.scrollTop);
             this._xElement.style.display = 'block';
             this._xElement.style.width = this._elementWidth + 'px';
-
-            this.scrollLeftUpdated(this._parent.scrollLeft);
         }
         else {
             this._xElement.style.display = 'none';
         }
 
+        // determine visibility of y element
         if (this._parentHeight < this._parentScrollHeight) {
+            this.scrollLeftUpdated(this._parent.scrollLeft);
             this._yElement.style.display = 'block';
             this._yElement.style.height = this._elementHeight + 'px';
-
-            this.scrollTopUpdated(this._parent.scrollTop);
         }
         else {
             this._yElement.style.display = 'none';
