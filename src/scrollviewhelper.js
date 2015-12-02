@@ -68,7 +68,7 @@ export function generateEventHandlerForElement(aAttribute, aParentWriteCallback)
 
 export function applyOptionsToScollBarElement(aElement, aElementName, aOptions) {
     let stylesKey = aElementName + 'Styles';
-    let classKey = aElement + 'Class';
+    let classKey = aElementName + 'Class';
 
     if (aOptions[stylesKey] && toString.call(aOptions[stylesKey]) === '[object Object]') {
         Object.keys(aOptions[stylesKey]).forEach((aKey) => {

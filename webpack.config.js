@@ -1,12 +1,16 @@
 'use strict';
 
 var path = require('path');
+var webpack = require('webpack');
+var pkgJson = require('./package.json');
 
 module.exports = {
     entry: './src/scroller.js',
     output: {
         path: 'dist/',
-        filename: 'scroller.js'
+        filename: 'scroller.js',
+        libraryTarget: 'umd',
+        library: pkgJson.name
     },
     module: {
         loaders: [
@@ -28,5 +32,12 @@ module.exports = {
         root: [
             path.resolve('./src')
         ]
-    }
+    },
+    plugins: [
+        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.UglifyJsPlugin(),
+        new webpack.DefinePlugin({
+            PKG_VERSION: JSON.stringify(pkgJson.version)
+        })
+    ]
 };

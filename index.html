@@ -1,13 +1,19 @@
 <html>
-    <head></head>
-    <body>
-        <div id="container" style="height: 250px;border: 2px solid black;">
-            <div style="height: 100px;background-color: red;width:111%;"></div>
-            <div style="height: 100px;background-color: blue;"></div>
-            <div style="height: 100px;background-color: green;"></div>
-            <div style="height: 100px;background-color: yellow;"></div>
-        </div>
-        
-        <script src="dist/scroller.js"></script>
-    </body>
+
+<head></head>
+
+<body>
+    <div id="container" style="height: 250px;border: 2px solid black;">
+        <div style="height: 100px;background-color: red;width:111%;"></div>
+        <div style="height: 100px;background-color: blue;"></div>
+        <div style="height: 100px;background-color: green;"></div>
+        <div style="height: 100px;background-color: yellow;"></div>
+    </div>
+
+    <script src="dist/scroller.js"></script>
+    <script>
+        window.scrollerInstance = new window.scroller.ScrollContainer(document.querySelector('#container'), {});
+    </script>
+</body>
+
 </html>

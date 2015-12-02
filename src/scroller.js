@@ -1,16 +1,62 @@
+/*global PKG_VERSION*/
 'use strict';
 
 import {ScrollView} from './scrollview';
 
-class Scroller {
-    constructor(aElement, aOptions) {
+export class ScrollContainer {
+    constructor(aElement, aOptions = {}) {
         this._container = aElement;
-        this._scrollView = new Scroller.ScrollView(this, aOptions);
-        
+        this._scrollView = new ScrollContainer.ScrollView(this, aOptions);
+        this._options = aOptions;
+
         this._eventListener = {
             wheel: (aEvent) => {
                 this.setScrollTop(this._container.scrollTop + aEvent.deltaY);
                 this.setScrollLeft(this._container.scrollLeft + aEvent.deltaX);
+            },
+            touchstart: (aEvent) => {
+                if (aEvent.defaultPrevented || aOptions.disableTouchScrollingOnContainer) {
+                    return;
+                }
+                
+                aEvent.preventDefault();
+                let touchToTrack = aEvent.which || 0;
+                let tmpMoverX = aEvent.touches[touchToTrack].pageX;
+                let tmpMoverY = aEvent.touches[touchToTrack].pageY;
+
+                let tmpMovePointer = (e) => {
+                    if (e.which !== touchToTrack) {
+                        return;
+                    }
+
+                    e.preventDefault();
+                    let distanceX = tmpMoverX - e.touches[touchToTrack].pageX;
+                    let distanceY = tmpMoverY - e.touches[touchToTrack].pageY;
+
+                    tmpMoverX = e.touches[touchToTrack].pageX;
+                    tmpMoverY = e.touches[touchToTrack].pageY;
+
+                    this.setScrollTop(distanceY, 'add');
+                    this.setScrollLeft(distanceX, 'add');
+                }
+
+                let tmpEndPointer = (e) => {
+                    if (e.which !== touchToTrack) {
+                        return;
+                    }
+
+                    e.preventDefault();
+                    document.body.removeEventListener('touchmove', tmpMovePointer);
+                    document.body.removeEventListener('touchend', tmpEndPointer);
+                    document.body.removeEventListener('touchleave', tmpEndPointer);
+
+                    tmpMovePointer = null;
+                    tmpEndPointer = null;
+                }
+
+                document.body.addEventListener('touchmove', tmpMovePointer);
+                document.body.addEventListener('touchend', tmpEndPointer);
+                document.body.addEventListener('touchleave', tmpEndPointer);
             }
         };
 
@@ -55,6 +101,10 @@ class Scroller {
     }
 
     setScrollTop(aScrollTop, aOperation) {
+        if (this._options.disableYScrolling) {
+            return;
+        }
+
         switch (aOperation) {
             case 'add':
                 this._container.scrollTop += aScrollTop;
@@ -71,6 +121,10 @@ class Scroller {
     }
 
     setScrollLeft(aScrollLeft, aOperation) {
+        if (this._options.disableXScrolling) {
+            return;
+        }
+
         switch (aOperation) {
             case 'add':
                 this._container.scrollLeft += aScrollLeft;
@@ -100,8 +154,6 @@ class Scroller {
     }
 }
 
-Scroller.ScrollView = ScrollView;
+ScrollContainer.ScrollView = ScrollView;
 
-let target = document.querySelector('#container');
-
-let instance = new Scroller(target, {});
+export const VERSION = PKG_VERSION;
