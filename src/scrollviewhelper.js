@@ -5,13 +5,14 @@ export function generateEventHandlerForElement(aAttribute, aPropertyFactor, aPar
         mousedown: (aEvent) => {
             aEvent.preventDefault();
             let tmpMover = aEvent[aAttribute];
+            let scrollPositionFloat = this._scrollerParent[aParentWriteCallback]();
 
             let tmpMovePointer = (e) => {
                 e.preventDefault();
-                let distance = (e[aAttribute] - tmpMover) * this[aPropertyFactor];
+                scrollPositionFloat += (e[aAttribute] - tmpMover) * this[aPropertyFactor];
                 tmpMover = e[aAttribute];
 
-                this._scrollerParent[aParentWriteCallback](distance, 'add');
+                this._scrollerParent[aParentWriteCallback](Math.round(scrollPositionFloat));
             }
 
             let tmpEndPointer = (e) => {
@@ -32,6 +33,7 @@ export function generateEventHandlerForElement(aAttribute, aPropertyFactor, aPar
             aEvent.preventDefault();
             let touchToTrack = aEvent.which || 0;
             let tmpMover = aEvent.touches[touchToTrack][aAttribute];
+            let scrollPositionFloat = this._scrollerParent[aParentWriteCallback]();
 
             let tmpMovePointer = (e) => {
                 if (e.which !== touchToTrack) {
@@ -39,10 +41,10 @@ export function generateEventHandlerForElement(aAttribute, aPropertyFactor, aPar
                 }
 
                 e.preventDefault();
-                let distance = (e.touches[touchToTrack][aAttribute] - tmpMover) * this[aPropertyFactor];
+                scrollPositionFloat += (e[aAttribute] - tmpMover) * this[aPropertyFactor];
                 tmpMover = e.touches[touchToTrack][aAttribute];
 
-                this._scrollerParent[aParentWriteCallback](distance, 'add');
+                this._scrollerParent[aParentWriteCallback](Math.round(scrollPositionFloat));
             }
 
             let tmpEndPointer = (e) => {

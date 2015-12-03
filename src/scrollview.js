@@ -15,8 +15,8 @@ export class ScrollView {
         this._yElement = document.createElement('div');
 
         // create the event handler for the scroller elements
-        this._xEventListener = generateEventHandlerForElement.call(this, 'pageX', '_scrollWidthFactor', 'setScrollLeft');
-        this._yEventListener = generateEventHandlerForElement.call(this, 'pageY', '_scrollHeightFactor', 'setScrollTop');
+        this._xEventListener = generateEventHandlerForElement.call(this, 'pageX', '_scrollWidthFactor', 'scrollLeft');
+        this._yEventListener = generateEventHandlerForElement.call(this, 'pageY', '_scrollHeightFactor', 'scrollTop');
 
         // style some x specific things
         this._xElement.style.height = '6px';

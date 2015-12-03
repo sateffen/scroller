@@ -100,62 +100,44 @@ export class ScrollContainer {
         this._scrollView.parentUpdated();
     }
 
-    setScrollTop(aScrollTop, aOperation) {
+    scrollTop(aScrollTop) {
+        if (arguments.length === 0) {
+            return this._container.scrollTop;
+        }
+        
         if (this._options.disableYScrolling) {
             return;
         }
-        let tmp = this._container.scrollTop;
-
-        switch (aOperation) {
-            case 'add':
-                tmp += aScrollTop;
-                break;
-            case 'substract':
-                tmp -= aScrollTop;
-                break;
-            default:
-                tmp = aScrollTop;
-                break;
+        
+        if (aScrollTop < 0) {
+            aScrollTop = 0;
+        }
+        else if (aScrollTop > this._container.scrollHeight - this._container.clientHeight) {
+            aScrollTop = this._container.scrollHeight - this._container.clientHeight;
         }
 
-        if (tmp < 0) {
-            tmp = 0;
-        }
-        else if (tmp > this._container.scrollHeight - this._container.clientHeight) {
-            tmp = this._container.scrollHeight - this._container.clientHeight;
-        }
-
-        this._scrollView.scrollTopUpdated(tmp);
-        this._container.scrollTop = tmp;
+        this._scrollView.scrollTopUpdated(aScrollTop);
+        this._container.scrollTop = aScrollTop;
     }
 
-    setScrollLeft(aScrollLeft, aOperation) {
+    scrollLeft(aScrollLeft) {
+        if (arguments.length === 0) {
+            return this._container.scrollLeft;
+        }
+        
         if (this._options.disableXScrolling) {
             return;
         }
-        let tmp = this._container.scrollLeft;
 
-        switch (aOperation) {
-            case 'add':
-                tmp += aScrollLeft;
-                break;
-            case 'substract':
-                tmp -= aScrollLeft;
-                break;
-            default:
-                tmp = aScrollLeft;
-                break;
+        if (aScrollLeft < 0) {
+            aScrollLeft = 0;
+        }
+        else if (aScrollLeft > this._container.scrollWidth - this._container.clientWidth) {
+            aScrollLeft = this._container.scrollWidth - this._container.clientWidth;
         }
 
-        if (tmp < 0) {
-            tmp = 0;
-        }
-        else if (tmp > this._container.scrollWidth - this._container.clientWidth) {
-            tmp = this._container.scrollWidth - this._container.clientWidth;
-        }
-
-        this._scrollView.scrollLeftUpdated(tmp);
-        this._container.scrollLeft = tmp;
+        this._scrollView.scrollLeftUpdated(aScrollLeft);
+        this._container.scrollLeft = aScrollLeft;
     }
 
     destroy() {
