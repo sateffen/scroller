@@ -2,6 +2,7 @@
 'use strict';
 
 import {ScrollView} from './scrollview';
+import * as scrollViewHelper from './scrollviewhelper';
 
 export class ScrollContainer {
     constructor(aElement, aOptions = {}) {
@@ -11,8 +12,8 @@ export class ScrollContainer {
 
         this._eventListener = {
             wheel: (aEvent) => {
-                this.setScrollTop(this._container.scrollTop + aEvent.deltaY);
-                this.setScrollLeft(this._container.scrollLeft + aEvent.deltaX);
+                this.scrollTop(this._container.scrollTop + aEvent.deltaY);
+                this.scrollLeft(this._container.scrollLeft + aEvent.deltaX);
             },
             touchstart: (aEvent) => {
                 if (aEvent.defaultPrevented || aOptions.disableTouchScrollingOnContainer) {
@@ -36,8 +37,8 @@ export class ScrollContainer {
                     tmpMoverX = e.touches[touchToTrack].pageX;
                     tmpMoverY = e.touches[touchToTrack].pageY;
 
-                    this.setScrollTop(distanceY, 'add');
-                    this.setScrollLeft(distanceX, 'add');
+                    this.scrollTop(this._container.scrollTop + distanceY);
+                    this.scrollLeft(this._container.scrollLeft + distanceX);
                 }
 
                 let tmpEndPointer = (e) => {
@@ -155,5 +156,6 @@ export class ScrollContainer {
 }
 
 ScrollContainer.ScrollView = ScrollView;
+ScrollContainer.scrollViewHelper = scrollViewHelper;
 
 export const VERSION = PKG_VERSION;
