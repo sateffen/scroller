@@ -20,7 +20,6 @@ export class ScrollContainer {
                     return;
                 }
                 
-                aEvent.preventDefault();
                 let touchToTrack = aEvent.which || 0;
                 let tmpMoverX = aEvent.touches[touchToTrack].pageX;
                 let tmpMoverY = aEvent.touches[touchToTrack].pageY;
@@ -30,7 +29,6 @@ export class ScrollContainer {
                         return;
                     }
 
-                    e.preventDefault();
                     let distanceX = tmpMoverX - e.touches[touchToTrack].pageX;
                     let distanceY = tmpMoverY - e.touches[touchToTrack].pageY;
 
@@ -46,7 +44,6 @@ export class ScrollContainer {
                         return;
                     }
 
-                    e.preventDefault();
                     document.body.removeEventListener('touchmove', tmpMovePointer);
                     document.body.removeEventListener('touchend', tmpEndPointer);
                     document.body.removeEventListener('touchleave', tmpEndPointer);

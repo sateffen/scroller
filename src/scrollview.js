@@ -86,7 +86,7 @@ export class ScrollView {
         this._elementHeight = this._parentHeight * this._parentHeight / this._parentScrollHeight;
         this._scrollHeightFactor = this._parent.scrollHeight / this._parent.clientHeight;
         this._scrollWidthFactor = this._parent.scrollWidth / this._parent.clientWidth;
-
+        
         // determine visibility of x element
         if (this._parentWidth < this._parentScrollWidth) {
             this.scrollTopUpdated(this._parent.scrollTop);

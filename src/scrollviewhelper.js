@@ -8,7 +8,6 @@ export function generateEventHandlerForElement(aAttribute, aPropertyFactor, aPar
             let scrollPositionFloat = this._scrollerParent[aParentWriteCallback]();
 
             let tmpMovePointer = (e) => {
-                e.preventDefault();
                 scrollPositionFloat += (e[aAttribute] - tmpMover) * this[aPropertyFactor];
                 tmpMover = e[aAttribute];
 
@@ -16,7 +15,6 @@ export function generateEventHandlerForElement(aAttribute, aPropertyFactor, aPar
             }
 
             let tmpEndPointer = (e) => {
-                e.preventDefault();
                 document.body.removeEventListener('mousemove', tmpMovePointer);
                 document.body.removeEventListener('mouseup', tmpEndPointer);
                 document.body.removeEventListener('mouseleave', tmpEndPointer);
@@ -40,8 +38,7 @@ export function generateEventHandlerForElement(aAttribute, aPropertyFactor, aPar
                     return;
                 }
 
-                e.preventDefault();
-                scrollPositionFloat += (e[aAttribute] - tmpMover) * this[aPropertyFactor];
+                scrollPositionFloat += (e.touches[touchToTrack][aAttribute] - tmpMover) * this[aPropertyFactor];
                 tmpMover = e.touches[touchToTrack][aAttribute];
 
                 this._scrollerParent[aParentWriteCallback](Math.round(scrollPositionFloat));
@@ -52,7 +49,6 @@ export function generateEventHandlerForElement(aAttribute, aPropertyFactor, aPar
                     return;
                 }
 
-                e.preventDefault();
                 document.body.removeEventListener('touchmove', tmpMovePointer);
                 document.body.removeEventListener('touchend', tmpEndPointer);
                 document.body.removeEventListener('touchleave', tmpEndPointer);
