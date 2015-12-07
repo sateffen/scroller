@@ -1,6 +1,6 @@
 'use strict';
 
-import {generateEventHandlerForElement, applyOptionsToScollBarElement} from './scrollviewhelper'
+import {generateEventHandlerForElement, applyOptionsToScollBarElement} from './scrollviewhelper';
 
 export class ScrollView {
     constructor(aParentInstance, aOptions) {
