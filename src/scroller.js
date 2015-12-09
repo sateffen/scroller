@@ -19,7 +19,7 @@ export class ScrollContainer {
                 if (aEvent.defaultPrevented || aOptions.disableTouchScrollingOnContainer) {
                     return;
                 }
-                
+
                 let touchToTrack = aEvent.which || 0;
                 let tmpMoverX = aEvent.touches[touchToTrack].pageX;
                 let tmpMoverY = aEvent.touches[touchToTrack].pageY;
@@ -88,8 +88,12 @@ export class ScrollContainer {
             }
         }, aOptions.checkInterval || 300);
 
+        let currentPositionStyle = window.getComputedStyle(this._container, null).getPropertyValue('position');
+
+        if (currentPositionStyle !== 'absolute' && currentPositionStyle !== 'relative') {
+            this._container.style.position = 'relative';
+        }
         this._container.style.overflow = 'hidden';
-        this._container.style.position = 'relative';
 
         Object.keys(this._eventListener).forEach((aKey) => {
             this._container.addEventListener(aKey, this._eventListener[aKey]);
@@ -102,11 +106,11 @@ export class ScrollContainer {
         if (arguments.length === 0) {
             return this._container.scrollTop;
         }
-        
+
         if (this._options.disableYScrolling) {
             return;
         }
-        
+
         if (aScrollTop < 0) {
             aScrollTop = 0;
         }
@@ -122,7 +126,7 @@ export class ScrollContainer {
         if (arguments.length === 0) {
             return this._container.scrollLeft;
         }
-        
+
         if (this._options.disableXScrolling) {
             return;
         }
