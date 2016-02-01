@@ -35,7 +35,7 @@ module.exports = {
     },
     plugins: [
         new webpack.optimize.DedupePlugin(),
-        new webpack.optimize.UglifyJsPlugin(),
+        //new webpack.optimize.UglifyJsPlugin(),
         new webpack.DefinePlugin({
             PKG_VERSION: JSON.stringify(pkgJson.version)
         })
