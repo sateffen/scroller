@@ -9,6 +9,9 @@ this little proof of concept, that scrolling can be implemented in another way.
 I'm sure that out there is another helper doing the exact same, but I wasn't able to find it, so this is my response
 to it.
 
+**WARNING**: This is just a proof of concept! You can use the code, you can take the idea and build your own system,
+it's up to you. If you report issues I'll even investigate, but remember: This is a proof of concept.
+
 ## Basic API ##
 
 In the *dist/* folder you'll find a build version, which is usually up to date. You can use this bundle in your own
@@ -49,8 +52,3 @@ overwrites the default style. Default: {}
 overwrites the default style. Default: {}
 * `xElementClass<Array[string]|sring>`: A class or classlist, that gets applied to the x scroll element. Default: []
 * `yElementClass<Array[string]|sring>`: A class or classlist, that gets applied to the y scroll element. Default: []
-
-## Production ready? ##
-
-I don't think so. There are no actual unittests or so, so this is purely tested by hand. I'll write some when there is
-some time.
