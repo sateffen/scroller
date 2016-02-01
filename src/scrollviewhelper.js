@@ -68,17 +68,17 @@ export function applyOptionsToScollBarElement(aElement, aElementName, aOptions) 
     let stylesKey = aElementName + 'Styles';
     let classKey = aElementName + 'Class';
 
-    if (aOptions[stylesKey] && toString.call(aOptions[stylesKey]) === '[object Object]') {
+    if (aOptions && aOptions[stylesKey] && typeof aOptions[stylesKey] === 'string' && !Array.isArray(aOptions[stylesKey])) {
         Object.keys(aOptions[stylesKey]).forEach((aKey) => {
             aElement.style[aKey] = aOptions[stylesKey][aKey];
         });
     }
 
 
-    if (aOptions[classKey] && toString.call(aOptions[classKey]) === '[object String]') {
+    if (aOptions && aOptions[classKey] && aOptions[classKey] === 'string') {
         aElement.classList.add(aOptions[classKey]);
     }
-    else if (Array.isArray(aOptions[classKey])) {
+    else if (aOptions && Array.isArray(aOptions[classKey])) {
         aOptions[classKey].forEach((aClass) => {
             aElement.classList.add(aClass);
         });
