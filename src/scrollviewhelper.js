@@ -65,17 +65,17 @@ export function generateEventHandlerForElement(aAttribute, aPropertyFactor, aPar
 }
 
 export function applyOptionsToScollBarElement(aElement, aElementName, aOptions) {
-    let stylesKey = aElementName + 'Styles';
-    let classKey = aElementName + 'Class';
+    const stylesKey = aElementName + 'Styles';
+    const classKey = aElementName + 'Class';
 
-    if (aOptions && aOptions[stylesKey] && typeof aOptions[stylesKey] === 'string' && !Array.isArray(aOptions[stylesKey])) {
+    if (aOptions && aOptions[stylesKey] && typeof aOptions[stylesKey] === 'object' && !Array.isArray(aOptions[stylesKey])) {
         Object.keys(aOptions[stylesKey]).forEach((aKey) => {
             aElement.style[aKey] = aOptions[stylesKey][aKey];
         });
     }
 
 
-    if (aOptions && aOptions[classKey] && aOptions[classKey] === 'string') {
+    if (aOptions && aOptions[classKey] && typeof aOptions[classKey] === 'string') {
         aElement.classList.add(aOptions[classKey]);
     }
     else if (aOptions && Array.isArray(aOptions[classKey])) {

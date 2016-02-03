@@ -58,6 +58,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
@@ -133,13 +135,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var stylesKey = aElementName + 'Styles';
 	    var classKey = aElementName + 'Class';
 
-	    if (aOptions && aOptions[stylesKey] && typeof aOptions[stylesKey] === 'string' && !Array.isArray(aOptions[stylesKey])) {
+	    if (aOptions && aOptions[stylesKey] && _typeof(aOptions[stylesKey]) === 'object' && !Array.isArray(aOptions[stylesKey])) {
 	        Object.keys(aOptions[stylesKey]).forEach(function (aKey) {
 	            aElement.style[aKey] = aOptions[stylesKey][aKey];
 	        });
 	    }
 
-	    if (aOptions && aOptions[classKey] && aOptions[classKey] === 'string') {
+	    if (aOptions && aOptions[classKey] && typeof aOptions[classKey] === 'string') {
 	        aElement.classList.add(aOptions[classKey]);
 	    } else if (aOptions && Array.isArray(aOptions[classKey])) {
 	        aOptions[classKey].forEach(function (aClass) {
