@@ -1,6 +1,26 @@
 <html>
 
-<head></head>
+<head>
+    <style>
+        .scrollbar::after {
+            position: absolute;
+            background-color: black;
+            content: " ";
+        }
+        
+        .scrollbar.vertical::after {
+            width: 5px;
+            height: 100%;
+            left: -5px;
+        }
+        
+        .scrollbar.horizontal::after {
+            height: 5px;
+            width: 100%;
+            top: -5px;
+        }
+    </style>
+</head>
 
 <body>
     <div id="container" style="height: 250px;border: 2px solid black;">
@@ -12,7 +32,10 @@
 
     <script src="dist/scroller.js"></script>
     <script>
-        window.scrollerInstance = new window.scroller.ScrollContainer(document.querySelector('#container'), {});
+        window.scrollerInstance = new window.scroller.ScrollContainer(document.querySelector('#container'), {
+            xElementClass: ['scrollbar', 'horizontal'],
+            yElementClass: ['scrollbar', 'vertical']
+        });
     </script>
 </body>
 

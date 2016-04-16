@@ -20,7 +20,7 @@ export class ScrollContainer {
                     return;
                 }
 
-                let touchToTrack = aEvent.which || 0;
+                const touchToTrack = aEvent.which || 0;
                 let tmpMoverX = aEvent.touches[touchToTrack].pageX;
                 let tmpMoverY = aEvent.touches[touchToTrack].pageY;
 
@@ -88,7 +88,7 @@ export class ScrollContainer {
             }
         }, aOptions.checkInterval || 300);
 
-        let currentPositionStyle = window.getComputedStyle(this._container, null).getPropertyValue('position');
+        const currentPositionStyle = window.getComputedStyle(this._container, null).getPropertyValue('position');
 
         if (currentPositionStyle !== 'absolute' && currentPositionStyle !== 'relative') {
             this._container.style.position = 'relative';

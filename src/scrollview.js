@@ -19,17 +19,14 @@ export class ScrollView {
         this._yEventListener = generateEventHandlerForElement.call(this, 'pageY', '_scrollHeightFactor', 'scrollTop');
 
         // style some x specific things
-        this._xElement.style.height = '6px';
+        this._xElement.style.height = '0px';
         this._xElement.style.left = '0px';
+        this._xElement.style.position = 'absolute';
 
         // style some y specific things
-        this._yElement.style.width = '6px';
+        this._yElement.style.width = '0px';
         this._yElement.style.top = '0px';
-
-        // style some styles that should apply to x and y
-        this._xElement.style.position = this._yElement.style.position = 'absolute';
-        this._xElement.style.backgroundColor = this._yElement.style.backgroundColor = 'rgba(0,0,0,0.6)';
-        this._xElement.style.borderRadius = this._yElement.style.borderRadius = '3px';
+        this._yElement.style.position = 'absolute';
 
         // and apply the options to the scrollbar elements
         applyOptionsToScollBarElement(this._xElement, 'xElement', aOptions);
@@ -64,7 +61,7 @@ export class ScrollView {
             this._yElement.style.top = (aScrollTop + partSize) + 'px';
         }
 
-        this._xElement.style.top = (aScrollTop + this._parentHeight - 6) + 'px';
+        this._xElement.style.top = Math.floor(aScrollTop + this._parentHeight) + 'px';
     }
 
     scrollLeftUpdated(aScrollLeft) {
@@ -74,7 +71,7 @@ export class ScrollView {
             this._xElement.style.left = (aScrollLeft + partSize) + 'px';
         }
 
-        this._yElement.style.left = (aScrollLeft + this._parentWidth - 6) + 'px';
+        this._yElement.style.left = Math.floor(aScrollLeft + this._parentWidth) + 'px';
     }
 
     parentUpdated() {
