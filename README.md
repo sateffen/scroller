@@ -1,16 +1,11 @@
 # scroller #
 
-This is a proof of concept, how a scroll system could work.
+Basically this started as a prove of concept, but after I wrote this, it got used in some projects right away.
+So, if you want, you can use this project in your projects as well, just do it. If you encounter some wild
+magikarp or so, just leave me a ticket.
 
-The main problem is, that a lot of scroll plugins are tied to jquery, or introduce a lot of overhead by trying to
-reuse the default behaviour of browsers. This overhead is not needed to implement simple scrolling, so I've created
-this little proof of concept, that scrolling can be implemented in another way.
-
-I'm sure that out there is another helper doing the exact same, but I wasn't able to find it, so this is my response
-to it.
-
-**WARNING**: This is just a proof of concept! You can use the code, you can take the idea and build your own system,
-it's up to you. If you report issues I'll even investigate, but remember: This is a proof of concept.
+The scrollbars itself don't have any style because I don't know what most people need. So if you want to style
+the scrollbar, see the *index.html*. In the style tag there you'll see the best way to style the scrollbars.
 
 ## Basic API ##
 
@@ -52,3 +47,9 @@ overwrites the default style. Default: {}
 overwrites the default style. Default: {}
 * `xElementClass<Array[string]|sring>`: A class or classlist, that gets applied to the x scroll element. Default: []
 * `yElementClass<Array[string]|sring>`: A class or classlist, that gets applied to the y scroll element. Default: []
+
+## Changelog ##
+
+### Version 1.0.0 ###
+
+* Initial release
