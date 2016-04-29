@@ -36,6 +36,8 @@ There are some options, you can use:
 * `disableTouchScrollingOnContainer<Boolean>`: This option tells the container, not to add event listeners for touch
 scrolling to the container, otherwise touch users can put their finger anywhere in the container and scroll with this
 like they are used to. Default: false
+* `disableMouseInteractionWithScrollbars<Boolean>`: This option tells the scrollbars not to interact with mouse and
+touch. This way you can disable scrolling with holding the scrollbars, if it's just an indicator. Default: false
 * `checkInterval<Number>`: This option will tell, in what interval the container should be checked. The interval will
 check the size of the container itself, and whether the container is in the DOM tree or not. If the container is not
 in the DOM tree anymore, the destroy method is invoked automatically. The count of this is in ms. Default: 300
