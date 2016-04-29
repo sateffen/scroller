@@ -18,6 +18,7 @@ export class ScrollView {
         // first save the details about the parent instance and it's container element
         this._parent = aParentInstance._container;
         this._scrollerParent = aParentInstance;
+        this._options = aOptions;
 
         // then calculate a scroll factor, that is used for scrolling with the scrollbars itself.
         // The problem is, that if the user grabs the vertical scrollbar, and drags it 10px down
@@ -153,10 +154,13 @@ export class ScrollView {
             this._yElement.removeEventListener(aKey, this._yEventListener[aKey]);
         });
 
-        // then remove the elements from DOM. Even if they are not appended,
-        // now no external pointers exist anymore
-        this._parent.removeChild(this._xElement);
-        this._parent.removeChild(this._yElement);
+        // then remove the elements from DOM if they are appended
+        if (!this._options.disableXScrolling) {
+            this._parent.removeChild(this._xElement);
+        }
+        if (!this._options.disableYScrolling) {
+            this._parent.removeChild(this._yElement);
+        }
 
         // and finally null all data, so the GC can clean it up        
         this._parent = null;
