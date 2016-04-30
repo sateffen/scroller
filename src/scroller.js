@@ -114,6 +114,8 @@ export class ScrollContainer {
             this._container.addEventListener(aKey, this._eventListener[aKey]);
         });
 
+        this._scrollTop = 0;        
+        this._scrollLeft = 0;        
         // and tell the scrollView to execute a parentUpdated       
         this._scrollView.parentUpdated();
     }
@@ -157,6 +159,15 @@ export class ScrollContainer {
                 // and tell the scrollView about the parent update                
                 this._scrollView.parentUpdated();
             }
+
+            if (this._scrollTop !== this._container.scrollTop) {
+                this.scrollTop(this._container.scrollTop);
+                console.log('SCROLL TOP UPDATED')
+            }
+            
+            if (this._scrollLeft !== this._container.scrollLeft) {
+                this.scrollLeft(this._container.scrollLeft);
+            }
         };
     }
 
@@ -181,10 +192,11 @@ export class ScrollContainer {
         }
 
         // if the scroll top has changed
-        if (this._container.scrollTop !== aScrollTop) {
+        if (this._scrollTop !== aScrollTop) {
             // call the update trigger and save the scroll top value
             this._scrollView.scrollTopUpdated(aScrollTop);
             this._container.scrollTop = aScrollTop;
+            this._scrollTop = aScrollTop;
         }
 
         // finally simply return the scrollTop value        
@@ -212,10 +224,11 @@ export class ScrollContainer {
         }
 
         // if scrollLeft has changed
-        if (this._container.scrollLeft !== aScrollLeft) {
+        if (this._scrollLeft !== aScrollLeft) {
             // call the update trigger and save set the scrollLeft value
             this._scrollView.scrollLeftUpdated(aScrollLeft);
             this._container.scrollLeft = aScrollLeft;
+            this._scrollLeft = aScrollLeft;
         }
 
         // finally return the scrollLeft value
