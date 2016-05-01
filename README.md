@@ -49,6 +49,8 @@ overwrites the default style. Default: {}
 overwrites the default style. Default: {}
 * `xElementClass<Array[string]|sring>`: A class or classlist, that gets applied to the x scroll element. Default: []
 * `yElementClass<Array[string]|sring>`: A class or classlist, that gets applied to the y scroll element. Default: []
+* `xMinSize<number>`: The minimal size of the x scrollbar in px. Default: undefined
+* `yMinSize<number>`: The minimal size of the y scrollbar in px. Default: undefined
 
 ## Changelog ##
 

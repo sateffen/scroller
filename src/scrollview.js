@@ -126,6 +126,11 @@ export class ScrollView {
 
         // determine visibility of x element
         if (this._parentWidth < this._parentScrollWidth) {
+            // check if the xMinSize option is available and if the element is too small
+            if (typeof this._options.xMinSize === 'number' && this._elementWidth < this._options.xMinSize) {
+                this._elementWidth = this._options.xMinSize;
+            }
+
             this.scrollTopUpdated(this._parent.scrollTop);
             this._xElement.style.display = 'block';
             this._xElement.style.width = this._elementWidth + 'px';
@@ -136,6 +141,11 @@ export class ScrollView {
 
         // determine visibility of y element
         if (this._parentHeight < this._parentScrollHeight) {
+            // check if the yMinSize option is available and if the element is too small
+            if (typeof this._options.yMinSize === 'number' && this._elementHeight < this._options.yMinSize) {
+                this._elementHeight = this._options.yMinSize;
+            }
+
             this.scrollLeftUpdated(this._parent.scrollLeft);
             this._yElement.style.display = 'block';
             this._yElement.style.height = this._elementHeight + 'px';
