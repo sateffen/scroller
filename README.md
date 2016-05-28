@@ -87,6 +87,13 @@ There are some options, you can use:
 
 ## Changelog ##
 
+### Version 1.1.0 ###
+
+* Bugfix for not scrolling up if the scrollHeight shrinks
+* Reading scrollTop and scrollLeft on the element itself is now detected
+* Added option for minimal scrollbar height/width
+* Dragging the scrollbars can now be disabled
+
 ### Version 1.0.0 ###
 
 * Initial release
