@@ -138,6 +138,12 @@ export class ScrollContainer {
                 potentialRootElement = potentialRootElement.parentElement;
             }
 
+            const oldScrollTop = this._scrollTop;
+            const oldScrollLeft = this._scrollLeft;
+
+            this._scrollView.scrollTopUpdated(0);
+            this._scrollView.scrollLeftUpdated(0);
+
             // if there is no root element            
             if (potentialRootElement == undefined) {
                 // simply destroy everything, because we are detached from DOM
@@ -159,14 +165,19 @@ export class ScrollContainer {
                 // and tell the scrollView about the parent update                
                 this._scrollView.parentUpdated();
             }
-
+            
             if (this._scrollTop !== this._container.scrollTop) {
                 this.scrollTop(this._container.scrollTop);
-                console.log('SCROLL TOP UPDATED')
+            }
+            else if (oldScrollTop < scrollHeight) {
+            this._scrollView.scrollTopUpdated(oldScrollTop);
             }
             
             if (this._scrollLeft !== this._container.scrollLeft) {
                 this.scrollLeft(this._container.scrollLeft);
+            }
+            else if (oldScrollLeft < scrollWidth) {
+            this._scrollView.scrollLeftUpdated(oldScrollLeft);
             }
         };
     }
