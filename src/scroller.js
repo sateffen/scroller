@@ -147,7 +147,7 @@ export class ScrollContainer {
             // if there is no root element            
             if (potentialRootElement == undefined) {
                 // simply destroy everything, because we are detached from DOM
-                this.destroy();
+                return this.destroy();
             }
             // else check if something has changed
             else if (
