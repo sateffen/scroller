@@ -87,6 +87,10 @@ There are some options, you can use:
 
 ## Changelog ##
 
+### Version 1.1.1 ###
+
+* Fixed a problem with removed elements
+
 ### Version 1.1.0 ###
 
 * Bugfix for not scrolling up if the scrollHeight shrinks
