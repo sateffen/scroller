@@ -171,10 +171,10 @@ export class ScrollView {
         });
 
         // then remove the elements from DOM if they are appended
-        if (!this._options.disableXScrolling) {
+        if (this._parent.contains(this._xElement)) {
             this._parent.removeChild(this._xElement);
         }
-        if (!this._options.disableYScrolling) {
+        if (this._parent.contains(this._yElement)) {
             this._parent.removeChild(this._yElement);
         }
 

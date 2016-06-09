@@ -87,6 +87,10 @@ There are some options, you can use:
 
 ## Changelog ##
 
+### Version 1.1.2 ###
+
+* Fixed a little bug
+
 ### Version 1.1.1 ###
 
 * Fixed a problem with removed elements

@@ -1,6 +1,6 @@
 {
     "name": "scroller",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "A simple scrollbar, that just works",
     "main": "scroller.js",
     "scripts": {
@@ -12,6 +12,6 @@
         "babel-core": "^6.9.0",
         "babel-loader": "^6.2.4",
         "babel-preset-es2015": "^6.9.0",
-        "webpack": "^2.1.0-beta.7"
+        "webpack": "^2.1.0-beta.13"
     }
 }
